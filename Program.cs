@@ -7,7 +7,11 @@ string number = parts[6];
 
 string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/pulls/{number}";
 
-Console.WriteLine("Owner:  " + owner);
-Console.WriteLine("Repo:   " + repo);
-Console.WriteLine("Number: " + number);
-Console.WriteLine("API:    " + apiUrl);
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("User-Agent", "code-review-ai");
+client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3.diff");
+client.DefaultRequestHeaders.Add("Authorization",
+    $"Bearer {Environment.GetEnvironmentVariable("GITHUB_TOKEN")}");
+
+string diff = await client.GetStringAsync(apiUrl);
+Console.WriteLine(diff);
