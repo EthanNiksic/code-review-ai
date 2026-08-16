@@ -14,4 +14,6 @@ client.DefaultRequestHeaders.Add("Authorization",
     $"Bearer {Environment.GetEnvironmentVariable("GITHUB_TOKEN")}");
 
 string diff = await client.GetStringAsync(apiUrl);
-Console.WriteLine(diff);
+
+string review = await LlmClient.ReviewAsync(diff);
+Console.WriteLine(review);
