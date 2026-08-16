@@ -5,18 +5,13 @@
 }
 
 string url = args[0];
-string[] parts = url.Split('/');
 
-if (parts.Length < 7 || !url.Contains("github.com") || parts[5] != "pull")
+if (!PullRequestUrl.TryParse(url, out var pr) || pr is null)
 {
     Console.Error.WriteLine($"Not a valid GitHub pull request URL: {url}");
     Console.Error.WriteLine("Expected format: https://github.com/owner/repo/pull/123");
     return 1;
 }
-
-string owner = parts[3];
-string repo = parts[4];
-string number = parts[6];
 
 if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_TOKEN")))
 {
@@ -24,7 +19,7 @@ if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_TOKEN")
     return 1;
 }
 
-string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/pulls/{number}";
+string apiUrl = pr.ToApiUrl();
 using var client = new HttpClient();
 client.DefaultRequestHeaders.Add("User-Agent", "code-review-ai");
 client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3.diff");
