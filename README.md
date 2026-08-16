@@ -4,7 +4,7 @@ CLI tool that fetches GitHub pull request diffs and generates automated review c
 
 ## Status
 
-Fetches PR diffs and generates LLM-written reviews. Handling of oversized diffs and posting comments to PRs are still in progress.
+Fetches PR diffs and generates LLM-written reviews, with input validation and unit-tested URL parsing. Handling of oversized diffs and posting comments to PRs are still in progress.
 
 ## Usage
 
@@ -20,11 +20,23 @@ dotnet run https://github.com/owner/repo/pull/123
 
 Parses a PR URL into a GitHub API endpoint, then requests the diff using the `application/vnd.github.v3.diff` Accept header, which returns raw diff text instead of JSON. The diff is sent to the OpenAI API, which returns review comments printed to standard output.
 
+URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request — exit with a descriptive message rather than a stack trace.
+
 Note that pull request diffs are sent to OpenAI's API for processing.
 
 ## Built with
 
 C# / .NET 10
+
+## Running tests
+
+```
+dotnet test tests/tests.csproj
+```
+
+## Limitations
+
+Large pull requests may exceed the model's context window and will currently fail. Reviews are printed to the terminal rather than posted to the pull request.
 
 ## Roadmap
 
