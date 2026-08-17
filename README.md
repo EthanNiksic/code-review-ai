@@ -13,7 +13,7 @@ Generate a fine-grained GitHub personal access token with read access to public 
 ```
 export GITHUB_TOKEN="your_github_token"
 export OPENAI_API_KEY="your_openai_key"
-dotnet run https://github.com/owner/repo/pull/123
+dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123
 ```
 
 ## How it works
