@@ -2,13 +2,9 @@
 
 CLI tool that fetches GitHub pull request diffs and generates automated review comments using an LLM.
 
-## Status
-
-Fetches PR diffs and generates LLM-written reviews, with input validation, oversized-diff handling, and unit-tested URL parsing. Posting comments directly to pull requests is still in progress.
-
 ## Usage
 
-Generate a fine-grained GitHub personal access token with read access to public repositories, and an OpenAI API key. Then:
+Generate a fine-grained GitHub personal access token and an OpenAI API key, then:
 
 ```
 export GITHUB_TOKEN="your_github_token"
@@ -16,11 +12,21 @@ export OPENAI_API_KEY="your_openai_key"
 dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123
 ```
 
+The review is printed to standard output. To post it as a comment on the pull request instead, add `--post`:
+
+```
+dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123 --post
+```
+
+Reading diffs requires a token with read access to the repository. Posting comments additionally requires `Pull requests: Read and write`.
+
+Reviews are generated with `gpt-4o-mini` by default.
+
 ## How it works
 
-Parses a PR URL into a GitHub API endpoint, then requests the diff using the `application/vnd.github.v3.diff` Accept header, which returns raw diff text instead of JSON. The diff is sent to the OpenAI API, which returns review comments printed to standard output.
+Parses a PR URL into a GitHub API endpoint, then requests the diff using the `application/vnd.github.v3.diff` Accept header, which returns raw diff text instead of JSON. The diff is sent to the OpenAI API, which returns review comments.
 
-URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request — exit with a descriptive message rather than a stack trace.
+URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request, insufficient token permissions — exit with a descriptive message rather than a stack trace.
 
 Diffs larger than the model's context budget are split on file boundaries and packed into batches sized to fit, each reviewed in a separate request. A single file larger than the budget is truncated and marked as such. The resulting reviews are combined into one output.
 
@@ -38,10 +44,10 @@ dotnet test
 
 ## Limitations
 
-Reviews are printed to the terminal rather than posted to the pull request. Batch sizing is based on character count as an approximation of token count, so the threshold is deliberately conservative.
+Reviews are posted as a single summary comment rather than inline on specific lines. Batch sizing is based on character count as an approximation of token count, so the threshold is deliberately conservative.
 
 ## Roadmap
 
 - [x] Send diffs to an LLM for review
 - [x] Handle diffs that exceed model context limits
-- [ ] Post comments directly to the PR
+- [x] Post comments directly to the PR

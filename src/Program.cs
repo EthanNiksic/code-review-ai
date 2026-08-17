@@ -58,7 +58,19 @@ try
     }
 
     string review = await LlmClient.ReviewAsync(diff);
-    Console.WriteLine(review);
+
+    bool post = args.Contains("--post");
+
+    if (post)
+    {
+        await GitHubClient.PostCommentAsync(client, pr, review);
+        Console.Error.WriteLine($"Posted review to {url}");
+    }
+    else
+    {
+        Console.WriteLine(review);
+    }
+
     return 0;
 }
 catch (HttpRequestException ex)
