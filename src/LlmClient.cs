@@ -6,7 +6,36 @@ public class LlmClient
 {
     private static readonly HttpClient http = new();
 
+    public const int MaxCharsPerRequest = 40_000;
+
     public static async Task<string> ReviewAsync(string diff)
+    {
+        var batches = DiffSplitter.Split(diff, MaxCharsPerRequest);
+
+        if (batches.Count == 0)
+            return "";
+
+        if (batches.Count == 1)
+            return await ReviewBatchAsync(batches[0]);
+
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < batches.Count; i++)
+        {
+            Console.Error.WriteLine($"Reviewing part {i + 1} of {batches.Count}...");
+
+            string review = await ReviewBatchAsync(batches[i]);
+
+            sb.AppendLine($"## Part {i + 1} of {batches.Count}");
+            sb.AppendLine();
+            sb.AppendLine(review);
+            sb.AppendLine();
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
+    private static async Task<string> ReviewBatchAsync(string diff)
     {
         var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         if (string.IsNullOrWhiteSpace(apiKey))

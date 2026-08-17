@@ -4,7 +4,7 @@ CLI tool that fetches GitHub pull request diffs and generates automated review c
 
 ## Status
 
-Fetches PR diffs and generates LLM-written reviews, with input validation and unit-tested URL parsing. Handling of oversized diffs and posting comments to PRs are still in progress.
+Fetches PR diffs and generates LLM-written reviews, with input validation, oversized-diff handling, and unit-tested URL parsing. Posting comments directly to pull requests is still in progress.
 
 ## Usage
 
@@ -22,6 +22,8 @@ Parses a PR URL into a GitHub API endpoint, then requests the diff using the `ap
 
 URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request — exit with a descriptive message rather than a stack trace.
 
+Diffs larger than the model's context budget are split on file boundaries and packed into batches sized to fit, each reviewed in a separate request. A single file larger than the budget is truncated and marked as such. The resulting reviews are combined into one output.
+
 Note that pull request diffs are sent to OpenAI's API for processing.
 
 ## Built with
@@ -31,15 +33,15 @@ C# / .NET 10
 ## Running tests
 
 ```
-dotnet test tests/tests.csproj
+dotnet test
 ```
 
 ## Limitations
 
-Large pull requests may exceed the model's context window and will currently fail. Reviews are printed to the terminal rather than posted to the pull request.
+Reviews are printed to the terminal rather than posted to the pull request. Batch sizing is based on character count as an approximation of token count, so the threshold is deliberately conservative.
 
 ## Roadmap
 
 - [x] Send diffs to an LLM for review
-- [ ] Handle diffs that exceed model context limits
+- [x] Handle diffs that exceed model context limits
 - [ ] Post comments directly to the PR
