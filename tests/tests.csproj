@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\code-review-ai.csproj" />
+    <ProjectReference Include="..\src\code-review-ai.csproj" />
   </ItemGroup>
 
 </Project>
