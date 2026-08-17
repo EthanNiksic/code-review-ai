@@ -3,7 +3,7 @@
 CLI tool that fetches GitHub pull request diffs and generates automated review comments using an LLM.
 
 ## Status
-
+Reviews are generated with `gpt-4o-mini` by default.
 Fetches PR diffs and generates LLM-written reviews, with input validation, oversized-diff handling, and unit-tested URL parsing. Posting comments directly to pull requests is still in progress.
 
 ## Usage
