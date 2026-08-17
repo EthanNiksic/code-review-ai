@@ -47,7 +47,7 @@ public class DiffSplitterTests
     [Fact]
     public void SeparatesSectionsWhenOverBudget()
     {
-        var batches = DiffSplitter.Split(TwoFileDiff, 120);
+        var batches = DiffSplitter.Split(TwoFileDiff, 40);
 
         Assert.Equal(2, batches.Count);
     }
@@ -61,6 +61,6 @@ public class DiffSplitterTests
 
         Assert.Single(batches);
         Assert.Contains("truncated", batches[0]);
-        Assert.True(batches[0].Length < 600);
+        Assert.True(DiffSplitter.CountTokens(batches[0]) < 600);
     }
 }

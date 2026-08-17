@@ -6,11 +6,11 @@ public class LlmClient
 {
     private static readonly HttpClient http = new();
 
-    public const int MaxCharsPerRequest = 40_000;
+    public const int MaxTokensPerRequest = 20_000;
 
     public static async Task<string> ReviewAsync(string diff)
     {
-        var batches = DiffSplitter.Split(diff, MaxCharsPerRequest);
+        var batches = DiffSplitter.Split(diff, MaxTokensPerRequest);
 
         if (batches.Count == 0)
             return "";

@@ -44,7 +44,7 @@ dotnet test
 
 ## Limitations
 
-Reviews are posted as a single summary comment rather than inline on specific lines. Batch sizing is based on character count as an approximation of token count, so the threshold is deliberately conservative.
+Reviews are posted as a single summary comment rather than inline on specific lines.
 
 ## Roadmap
 
