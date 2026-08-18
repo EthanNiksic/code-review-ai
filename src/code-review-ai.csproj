@@ -6,10 +6,26 @@
     <RootNamespace>code_review_ai</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>code-review-ai</ToolCommandName>
+    <PackageId>EthanNiksic.CodeReviewAi</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ethan Niksic</Authors>
+    <Description>CLI tool that fetches GitHub pull request diffs and generates automated review comments using an LLM.</Description>
+    <PackageTags>cli;code-review;github;openai;llm</PackageTags>
+    <PackageProjectUrl>https://github.com/EthanNiksic/code-review-ai</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EthanNiksic/code-review-ai</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpToken" Version="2.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>

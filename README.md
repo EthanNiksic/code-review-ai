@@ -2,6 +2,18 @@
 
 CLI tool that fetches GitHub pull request diffs and generates automated review comments using an LLM.
 
+## Install
+
+```
+dotnet tool install -g EthanNiksic.CodeReviewAi
+```
+
+If your shell reports `command not found` afterward, add .NET's tool directory to your PATH:
+
+```
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+
 ## Usage
 
 Generate a fine-grained GitHub personal access token and an OpenAI API key, then:
@@ -9,13 +21,13 @@ Generate a fine-grained GitHub personal access token and an OpenAI API key, then
 ```
 export GITHUB_TOKEN="your_github_token"
 export OPENAI_API_KEY="your_openai_key"
-dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123
+code-review-ai https://github.com/owner/repo/pull/123
 ```
 
 The review is printed to standard output. To post it as a comment on the pull request instead, add `--post`:
 
 ```
-dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123 --post
+code-review-ai https://github.com/owner/repo/pull/123 --post
 ```
 
 Reading diffs requires a token with read access to the repository. Posting comments additionally requires `Pull requests: Read and write`.
@@ -28,13 +40,21 @@ Parses a PR URL into a GitHub API endpoint, then requests the diff using the `ap
 
 URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request, insufficient token permissions — exit with a descriptive message rather than a stack trace.
 
-Diffs larger than the model's context budget are split on file boundaries and packed into batches sized to fit, each reviewed in a separate request. A single file larger than the budget is truncated and marked as such. The resulting reviews are combined into one output.
+Diffs larger than the model's context budget are split on file boundaries and packed into batches sized to fit, measured with the same tokenizer the model uses. A single file larger than the budget is truncated and marked as such. The resulting reviews are combined into one output.
 
 Note that pull request diffs are sent to OpenAI's API for processing.
 
 ## Built with
 
 C# / .NET 10
+
+## Building from source
+
+```
+git clone https://github.com/EthanNiksic/code-review-ai
+cd code-review-ai
+dotnet run --project src/code-review-ai.csproj https://github.com/owner/repo/pull/123
+```
 
 ## Running tests
 
@@ -46,8 +66,6 @@ dotnet test
 
 Reviews are posted as a single summary comment rather than inline on specific lines.
 
-## Roadmap
+## License
 
-- [x] Send diffs to an LLM for review
-- [x] Handle diffs that exceed model context limits
-- [x] Post comments directly to the PR
+MIT
