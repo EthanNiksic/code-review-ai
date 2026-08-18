@@ -38,7 +38,7 @@ Reviews are generated with `gpt-4o-mini` by default.
 
 Parses a PR URL into a GitHub API endpoint, then requests the diff using the `application/vnd.github.v3.diff` Accept header, which returns raw diff text instead of JSON. The diff is sent to the OpenAI API, which returns review comments.
 
-URLs are validated and parsed before any network call is made, and failures at each stage — invalid URL, missing credentials, missing pull request, insufficient token permissions — exit with a descriptive message rather than a stack trace.
+URLs are validated and parsed before any network call is made, and failures at each stage, invalid URL, missing credentials, missing pull request, insufficient token permissions — exit with a descriptive message rather than a stack trace.
 
 Diffs larger than the model's context budget are split on file boundaries and packed into batches sized to fit, measured with the same tokenizer the model uses. A single file larger than the budget is truncated and marked as such. The resulting reviews are combined into one output.
 
